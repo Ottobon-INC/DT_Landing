@@ -8,6 +8,7 @@ import NeuralPath from '@/components/NeuralPath';
 import ExpansionSection from '@/components/ExpansionSection';
 import ControlSection from '@/components/ControlSection';
 import DeploySection from '@/components/DeploySection';
+import HarnessingAI from '@/components/HarnessingAI';
 import SmoothScroll from '@/components/SmoothScroll';
 
 export default function Home() {
@@ -24,6 +25,7 @@ export default function Home() {
           <WatchItWork />
           <JournalistFramework />
           <SpecializationsSection />
+          <HarnessingAI />
           <ExpansionSection />
           <ControlSection />
           <DeploySection />

@@ -1,151 +1,303 @@
 'use client';
 
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
-import { useState, useRef } from 'react';
-import { Database, Brain, Zap, Send, CheckCircle2, Clock, Terminal } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useCallback } from 'react';
+import { User, Cpu, CheckCircle2, Clock, Loader2, Zap, TrendingUp, Activity, Sparkles } from 'lucide-react';
+
+const taskLabels = [
+  'Respond to client inquiry', 'Schedule team meeting', 'Review document draft',
+  'Update project status', 'Analyze performance data', 'Draft email response',
+  'Compile research notes', 'Process feedback form', 'Prepare weekly summary',
+  'Route support ticket', 'Generate progress report', 'Coordinate team sync',
+];
+const taskColors = ['#6366f1','#8b5cf6','#06b6d4','#10b981','#f59e0b','#ec4899','#6366f1','#8b5cf6','#06b6d4','#10b981','#f59e0b','#ec4899'];
+
+interface Task { id: number; label: string; progress: number; status: 'processing'|'completed'; duration: number; color: string; }
 
 export default function WatchItWork() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [activeStep, setActiveStep] = useState(0);
-  
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
+  const [soloTask, setSoloTask] = useState<Task>({ id: 0, label: taskLabels[0], progress: 0, status: 'processing', duration: 4000, color: '#94a3b8' });
+  const [soloCompleted, setSoloCompleted] = useState(0);
+  const [soloIdx, setSoloIdx] = useState(0);
+  const [twinTasks, setTwinTasks] = useState<Task[]>([]);
+  const [twinCompleted, setTwinCompleted] = useState(0);
+  const [twinCycle, setTwinCycle] = useState(0);
+  const [flashingIds, setFlashingIds] = useState<Set<number>>(new Set());
 
-  const steps = [
-    { label: "REQUEST", icon: <Send className="w-5 h-5" />, color: "text-slate-400", bg: "bg-slate-50" },
-    { label: "MEMORY", icon: <Database className="w-5 h-5" />, color: "text-indigo-500", bg: "bg-indigo-50" },
-    { label: "DECISION", icon: <Brain className="w-5 h-5" />, color: "text-violet-500", bg: "bg-violet-50" },
-    { label: "EXECUTION", icon: <Zap className="w-5 h-5" />, color: "text-emerald-500", bg: "bg-emerald-50" }
-  ];
+  const spawnTwin = useCallback(() => {
+    const off = (twinCycle * 8) % taskLabels.length;
+    setTwinTasks(Array.from({ length: 8 }, (_, i) => ({
+      id: Date.now() + i, label: taskLabels[(off + i) % taskLabels.length],
+      progress: 0, status: 'processing', duration: 600 + Math.random() * 1000,
+      color: taskColors[(off + i) % taskColors.length],
+    })));
+  }, [twinCycle]);
 
-  const logs = [
-    "Client response generated",
-    "Meeting scheduled",
-    "Research completed",
-    "Escalated to you",
-    "Workflow optimized",
-    "Data sync successful"
-  ];
+  // Solo: slow single task
+  useEffect(() => {
+    const iv = setInterval(() => {
+      setSoloTask(prev => {
+        if (prev.progress >= 100) {
+          const next = (soloIdx + 1) % taskLabels.length;
+          setSoloIdx(next);
+          setSoloCompleted(c => c + 1);
+          return { id: Date.now(), label: taskLabels[next], progress: 0, status: 'processing', duration: 4000, color: '#94a3b8' };
+        }
+        return { ...prev, progress: Math.min(prev.progress + 1.2, 100) };
+      });
+    }, 50);
+    return () => clearInterval(iv);
+  }, [soloIdx]);
 
-  const [visibleLogs, setVisibleLogs] = useState(logs.slice(0, 4));
+  // Twin: spawn
+  useEffect(() => { spawnTwin(); }, [spawnTwin]);
 
-  // Sync activeStep with scroll progress
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    // Map 0-1 to 0-3 indices
-    const step = Math.min(Math.floor(latest * 4), 3);
-    if (step !== activeStep) {
-      setActiveStep(step);
-      // Shuffle logs to show "activity" happening in response to scroll
-      const shuffled = [...logs].sort(() => Math.random() - 0.5).slice(0, 4);
-      setVisibleLogs(shuffled);
-    }
-  });
+  // Twin: fast parallel progress
+  useEffect(() => {
+    const iv = setInterval(() => {
+      setTwinTasks(prev => {
+        let allDone = true;
+        const updated = prev.map(t => {
+          if (t.progress >= 100) {
+            if (t.status !== 'completed') {
+              setFlashingIds(s => new Set(s).add(t.id));
+              setTimeout(() => setFlashingIds(s => { const n = new Set(s); n.delete(t.id); return n; }), 500);
+            }
+            return { ...t, status: 'completed' as const };
+          }
+          allDone = false;
+          return { ...t, progress: Math.min(t.progress + 100 / (t.duration / 25), 100) };
+        });
+        if (allDone && prev.length > 0 && prev.some(t => t.status === 'processing')) {
+          setTimeout(() => { setTwinCompleted(c => c + 8); setTwinCycle(c => c + 1); }, 800);
+        }
+        return updated;
+      });
+    }, 25);
+    return () => clearInterval(iv);
+  }, []);
+
+  useEffect(() => { if (twinCycle > 0) spawnTwin(); }, [twinCycle, spawnTwin]);
+
+  const multiplier = soloCompleted > 0 ? Math.max(Math.round(twinCompleted / soloCompleted), 2) : twinCompleted > 0 ? twinCompleted : 8;
 
   return (
-    <div ref={containerRef} className="relative h-[300vh]">
-      <section className="sticky top-0 h-screen flex items-center justify-center py-12 px-6 overflow-hidden bg-white">
-        {/* Abstract Background Grid */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-          style={{ backgroundImage: 'radial-gradient(#4F46E5 1px, transparent 1px)', backgroundSize: '30px 30px' }} 
-        />
+    <section className="py-28 px-6 bg-white relative overflow-hidden">
+      <div className="absolute inset-0 opacity-[0.025] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#4F46E5 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
 
-        <div className="max-w-6xl mx-auto w-full relative z-10">
-          <div className="text-center mb-16">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              className="text-6xl md:text-8xl font-black tracking-tighter text-slate-900 font-[family-name:var(--font-jakarta)]"
-            >
-              Watch it work.
-            </motion.h2>
-          </div>
+      <div className="max-w-6xl mx-auto relative z-10">
+        <div className="text-center mb-20">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-6xl md:text-8xl font-black tracking-tighter text-slate-900 font-[family-name:var(--font-jakarta)]"
+          >
+            Watch it work.
+          </motion.h2>
+          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.2 }}
+            className="text-sm text-slate-400 font-medium mt-4 tracking-wide">
+            One you, limited. One twin, limitless.
+          </motion.p>
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left Column: Logic Spine */}
-            <div className="relative flex flex-col items-center lg:items-start space-y-12">
-              <div className="absolute left-1/2 lg:left-6 top-0 bottom-0 w-px bg-slate-100 -z-10" />
-              
-              {steps.map((step, i) => (
-                <motion.div 
-                  key={step.label}
-                  animate={{ 
-                    opacity: activeStep === i ? 1 : 0.3,
-                    scale: activeStep === i ? 1.05 : 1,
-                    x: activeStep === i ? 10 : 0
-                  }}
-                  className="flex items-center gap-6 relative group"
-                >
-                  <div className={`w-12 h-12 rounded-full ${activeStep === i ? step.bg : 'bg-white'} border border-slate-100 flex items-center justify-center shadow-sm transition-colors duration-500`}>
-                    <div className={activeStep === i ? step.color : 'text-slate-300'}>
-                      {step.icon}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14">
+          {/* ─── LEFT: Without Twin ─── */}
+          <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }} className="relative">
+            <div className="rounded-3xl border border-slate-150 bg-gradient-to-br from-slate-50 to-slate-100/50 p-8 h-full relative overflow-hidden">
+              {/* Faded overlay */}
+              <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_24px,rgba(0,0,0,0.015)_24px,rgba(0,0,0,0.015)_25px)] pointer-events-none" />
+
+              <div className="relative z-10">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-3">
+                    <motion.div animate={{ scale: [1, 0.95, 1] }} transition={{ duration: 3, repeat: Infinity }}
+                      className="w-11 h-11 rounded-full bg-slate-200 border-2 border-slate-300 flex items-center justify-center">
+                      <User className="w-5 h-5 text-slate-500" />
+                    </motion.div>
+                    <div>
+                      <h3 className="text-sm font-black text-slate-600 uppercase tracking-wider font-[family-name:var(--font-jakarta)]">Without Twin</h3>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Sequential · Bottlenecked</p>
                     </div>
                   </div>
-                  <div className="flex flex-col">
-                    <span className={`text-2xl font-black italic tracking-tighter transition-colors duration-500 ${activeStep === i ? 'text-slate-900' : 'text-slate-300'} font-[family-name:var(--font-jakarta)]`}>
-                      {step.label}
-                    </span>
-                    <span className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">
-                      Status: {activeStep === i ? 'Active' : 'Idle'}
-                    </span>
+                  <div className="px-3 py-1.5 rounded-full bg-amber-50 border border-amber-200">
+                    <span className="text-[9px] font-black text-amber-600 uppercase tracking-widest">1× speed</span>
                   </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Right Column: Live Panels */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              className="bg-slate-50/50 p-8 rounded-3xl border border-slate-100 backdrop-blur-sm shadow-2xl shadow-indigo-500/5"
-            >
-              <div className="flex items-center justify-between mb-8 border-b border-slate-100 pb-4">
-                <div className="flex items-center gap-3">
-                  <Terminal className="w-4 h-4 text-slate-400" />
-                  <span className="text-[10px] font-bold tracking-widest text-slate-500 uppercase">Live Panels</span>
                 </div>
-                <div className="flex gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                  <div className="w-2 h-2 rounded-full bg-slate-200" />
-                </div>
-              </div>
 
-              <div className="space-y-3">
-                <AnimatePresence mode="popLayout">
-                  {visibleLogs.map((log, i) => (
-                    <motion.div 
-                      key={log}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 10 }}
-                      transition={{ delay: i * 0.1 }}
-                      className="bg-white p-4 rounded-xl border border-slate-50 shadow-sm flex items-center justify-between group hover:border-indigo-100 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                        <span className="text-sm font-bold text-slate-700 font-[family-name:var(--font-jakarta)]">{log}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-3 h-3 text-slate-300" />
-                        <span className="text-[9px] font-bold text-slate-400 uppercase">Just Now</span>
-                      </div>
+                {/* Active Task */}
+                <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm mb-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}>
+                        <Loader2 className="w-4 h-4 text-slate-400" />
+                      </motion.div>
+                      <span className="text-xs font-bold text-slate-700 truncate max-w-[180px]">{soloTask.label}</span>
+                    </div>
+                    <span className="text-[11px] font-black text-slate-400 tabular-nums">{Math.round(soloTask.progress)}%</span>
+                  </div>
+                  <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-slate-300 to-slate-400 rounded-full transition-all duration-75" style={{ width: `${soloTask.progress}%` }} />
+                  </div>
+                </div>
+
+                {/* Queue */}
+                <div className="space-y-2 mb-6">
+                  {taskLabels.slice((soloIdx + 1) % taskLabels.length, (soloIdx + 1) % taskLabels.length + 4).map((label, i) => (
+                    <motion.div key={`q-${i}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.1 }}
+                      className="flex items-center gap-3 p-3 rounded-xl bg-white/60 border border-slate-100">
+                      <Clock className="w-3 h-3 text-slate-300 flex-shrink-0" />
+                      <span className="text-[11px] text-slate-400 font-medium truncate">{label}</span>
+                      <span className="text-[8px] font-black text-slate-300 uppercase ml-auto flex-shrink-0 tracking-wider">Waiting</span>
                     </motion.div>
                   ))}
-                </AnimatePresence>
-              </div>
-
-              <div className="mt-8 flex items-center justify-between pt-4 border-t border-slate-100">
-                <div className="flex gap-4">
-                  <div className="h-1 w-8 bg-slate-200 rounded-full" />
-                  <div className="h-1 w-12 bg-slate-100 rounded-full" />
                 </div>
-                <span className="text-[9px] font-bold text-slate-300 tracking-[0.2em] uppercase">Neural Log System v4.0</span>
+
+                {/* Stats */}
+                <div className="flex items-center justify-between pt-5 border-t border-slate-200/60">
+                  <div className="flex items-baseline gap-2">
+                    <motion.span key={soloCompleted} initial={{ scale: 1.3, color: '#6366f1' }} animate={{ scale: 1, color: '#334155' }}
+                      className="text-3xl font-black tabular-nums">{soloCompleted}</motion.span>
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">done</span>
+                  </div>
+                  <div className="h-8 w-px bg-slate-100" />
+                  <div className="text-right">
+                    <div className="text-lg font-black text-slate-400 tabular-nums">~4s</div>
+                    <span className="text-[9px] text-slate-300 font-bold uppercase tracking-widest">per task</span>
+                  </div>
+                </div>
               </div>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
+
+          {/* ─── RIGHT: With Twin ─── */}
+          <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.15 }} className="relative">
+            {/* Animated Glow Ring */}
+            <motion.div animate={{ opacity: [0.3, 0.6, 0.3], scale: [0.98, 1.02, 0.98] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute -inset-3 bg-gradient-to-br from-indigo-200/40 via-violet-200/30 to-cyan-200/40 rounded-[2rem] blur-2xl -z-10" />
+            <div className="absolute -inset-px rounded-3xl bg-gradient-to-br from-indigo-400/20 via-violet-400/10 to-cyan-400/20 -z-[5]" />
+
+            <div className="rounded-3xl bg-white p-8 h-full relative overflow-hidden">
+              {/* Shimmer sweep */}
+              <motion.div animate={{ x: ['-100%', '200%'] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', repeatDelay: 2 }}
+                className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-indigo-50/60 to-transparent skew-x-[-20deg] pointer-events-none z-0" />
+
+              <div className="relative z-10">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-3">
+                    <motion.div animate={{ boxShadow: ['0 0 0 0 rgba(99,102,241,0.3)', '0 0 0 8px rgba(99,102,241,0)', '0 0 0 0 rgba(99,102,241,0.3)'] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="w-11 h-11 rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center">
+                      <Cpu className="w-5 h-5 text-white" />
+                    </motion.div>
+                    <div>
+                      <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider font-[family-name:var(--font-jakarta)]">With Twin</h3>
+                      <p className="text-[10px] text-indigo-500 font-bold uppercase tracking-widest">Parallel · Unlimited</p>
+                    </div>
+                  </div>
+                  <div className="px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 flex items-center gap-1.5">
+                    <Sparkles className="w-3 h-3 text-emerald-500" />
+                    <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">8× speed</span>
+                  </div>
+                </div>
+
+                {/* Parallel Tasks */}
+                <div className="space-y-2 mb-6">
+                  <AnimatePresence mode="popLayout">
+                    {twinTasks.map((task) => {
+                      const isDone = task.progress >= 100;
+                      const isFlashing = flashingIds.has(task.id);
+                      return (
+                        <motion.div key={task.id}
+                          initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                          animate={{
+                            opacity: 1, y: 0, scale: 1,
+                            backgroundColor: isFlashing ? `${task.color}15` : isDone ? '#f0fdf4' : '#ffffff',
+                          }}
+                          exit={{ opacity: 0, scale: 0.9, x: 20 }}
+                          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                          className="flex items-center gap-3 p-3 rounded-xl border"
+                          style={{ borderColor: isDone ? '#10b98130' : `${task.color}25` }}
+                        >
+                          {isDone ? (
+                            <motion.div initial={{ scale: 0, rotate: -90 }} animate={{ scale: 1, rotate: 0 }}
+                              transition={{ type: 'spring', stiffness: 500, damping: 15 }}>
+                              <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                            </motion.div>
+                          ) : (
+                            <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
+                              <Loader2 className="w-4 h-4 flex-shrink-0" style={{ color: task.color }} />
+                            </motion.div>
+                          )}
+                          <span className="text-[11px] font-semibold truncate flex-grow"
+                            style={{ color: isDone ? '#059669' : '#334155' }}>{task.label}</span>
+                          <div className="w-20 h-2 bg-slate-100 rounded-full overflow-hidden flex-shrink-0">
+                            <motion.div className="h-full rounded-full"
+                              style={{ width: `${task.progress}%`, backgroundColor: isDone ? '#10b981' : task.color }}
+                              transition={{ duration: 0.05 }}
+                            />
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </AnimatePresence>
+                </div>
+
+                {/* Stats */}
+                <div className="flex items-center justify-between pt-5 border-t border-indigo-50">
+                  <div className="flex items-baseline gap-2">
+                    <motion.span key={twinCompleted} initial={{ scale: 1.4, color: '#6366f1' }} animate={{ scale: 1, color: '#0f172a' }}
+                      transition={{ type: 'spring', stiffness: 300 }}
+                      className="text-3xl font-black tabular-nums">{twinCompleted}</motion.span>
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">done</span>
+                  </div>
+                  <div className="h-8 w-px bg-indigo-50" />
+                  <div className="text-right">
+                    <div className="text-lg font-black text-emerald-600 tabular-nums flex items-center gap-1 justify-end">
+                      <Zap className="w-4 h-4" />~0.5s
+                    </div>
+                    <span className="text-[9px] text-indigo-300 font-bold uppercase tracking-widest">per task</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
-      </section>
-    </div>
+
+        {/* Bottom Stats */}
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+          className="mt-20 max-w-3xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-10 sm:gap-20">
+            <motion.div animate={{ scale: [1, 1.03, 1] }} transition={{ duration: 2, repeat: Infinity }} className="text-center">
+              <motion.div key={multiplier} initial={{ scale: 1.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+                className="text-6xl md:text-8xl font-black bg-gradient-to-r from-indigo-600 via-violet-500 to-cyan-500 bg-clip-text text-transparent font-[family-name:var(--font-jakarta)]"
+                style={{ filter: 'drop-shadow(0 0 20px rgba(99,102,241,0.2))' }}>
+                {multiplier}x
+              </motion.div>
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mt-2">Throughput</p>
+            </motion.div>
+            <div className="hidden sm:block w-px h-20 bg-gradient-to-b from-transparent via-slate-200 to-transparent" />
+            <div className="text-center">
+              <div className="flex items-center gap-2 justify-center">
+                <TrendingUp className="w-6 h-6 text-emerald-500" />
+                <motion.span key={twinCompleted - soloCompleted} initial={{ scale: 1.3 }} animate={{ scale: 1 }}
+                  className="text-3xl font-black text-slate-900 tabular-nums">{Math.max(0, twinCompleted - soloCompleted)}</motion.span>
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mt-2">More tasks done</p>
+            </div>
+            <div className="hidden sm:block w-px h-20 bg-gradient-to-b from-transparent via-slate-200 to-transparent" />
+            <div className="text-center">
+              <div className="flex items-center gap-2 justify-center">
+                <Activity className="w-6 h-6 text-indigo-500" />
+                <span className="text-3xl font-black text-slate-900">100%</span>
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mt-2">Utilization</p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
   );
 }

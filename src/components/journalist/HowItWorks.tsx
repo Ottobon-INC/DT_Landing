@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { fadeUpVariant, staggerContainer } from '@/utils/journalist-utils';
 import { Mic2, Database, Zap } from 'lucide-react';
@@ -26,6 +27,12 @@ const steps = [
 ];
 
 export default function HowItWorks() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <section id="how-it-works" className="py-24 bg-[#f4f4f5] border-b border-neutral-200">
       <div className="max-w-6xl mx-auto px-6">
@@ -61,7 +68,7 @@ export default function HowItWorks() {
             
             <div className="flex flex-col items-center gap-6 z-10 w-full max-w-lg">
               <div className="flex items-center gap-1 h-12">
-                {[...Array(24)].map((_, i) => (
+                {mounted && [...Array(24)].map((_, i) => (
                   <motion.div
                     key={i}
                     animate={{ height: [12, 40, 16, 32, 12][(i + Math.floor(Math.random() * 5)) % 5] }}
