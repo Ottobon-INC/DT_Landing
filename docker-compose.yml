@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: digital-twin-app
+    network_mode: bridge
     restart: unless-stopped
     ports:
       - "9350:9350"
