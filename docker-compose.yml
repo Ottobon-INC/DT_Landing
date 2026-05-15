@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: digital-twin-app
+    restart: unless-stopped
+    ports:
+      - "9350:9350"
+    environment:
+      NODE_ENV: production
+      PORT: "9350"
+      HOSTNAME: 0.0.0.0
