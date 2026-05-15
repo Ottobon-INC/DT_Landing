@@ -19,4 +19,4 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 192.168.250.0/24
+        - subnet: ${APP_SUBNET:-10.254.250.0/24}
