@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, HelpCircle, Network, ArrowRight, X, Activity, GitBranch, BrainCircuit } from 'lucide-react';
 
@@ -148,10 +149,10 @@ export default function JournalistFramework() {
                   {panelData.description}
                 </p>
 
-                <button className="mt-8 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/80 hover:text-white transition-colors group">
+                <Link href="/journalist" className="mt-8 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/80 hover:text-white transition-colors group">
                   Explore Architecture 
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
+                </Link>
               </motion.div>
             )}
           </AnimatePresence>
@@ -160,7 +161,7 @@ export default function JournalistFramework() {
             animate={{
               x: activeCard ? '40%' : '0%',
               rotateY: activeCard ? -10 : 0,
-              scale: activeCard ? 0.95 : 1
+              scale: activeCard ? 1.4 : 1.5
             }}
             transition={{ type: "spring", stiffness: 80, damping: 20 }}
             className="relative z-20"

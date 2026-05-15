@@ -5,7 +5,6 @@ import WatchItWork from '@/components/WatchItWork';
 import SpecializationsSection from '@/components/SpecializationsSection';
 import JournalistFramework from '@/components/JournalistFramework';
 import NeuralPath from '@/components/NeuralPath';
-import ExpansionSection from '@/components/ExpansionSection';
 import ControlSection from '@/components/ControlSection';
 import DeploySection from '@/components/DeploySection';
 import HarnessingAI from '@/components/HarnessingAI';
@@ -26,7 +25,6 @@ export default function Home() {
           <JournalistFramework />
           <SpecializationsSection />
           <HarnessingAI />
-          <ExpansionSection />
           <ControlSection />
           <DeploySection />
         </div>

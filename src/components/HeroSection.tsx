@@ -32,10 +32,10 @@ export default function HeroSection() {
       </nav>
 
       {/* Hero Content */}
-      <main className="pt-20 px-6 max-w-7xl mx-auto">
+      <main className="pt-24 md:pt-40 px-6 max-w-7xl mx-auto">
         <ContainerScroll
           titleComponent={
-            <div className="space-y-8 mb-20">
+            <div className="space-y-8 mb-20 mt-16 md:mt-0">
               <h1 className="text-6xl md:text-8xl font-black tracking-tight leading-[1.1] text-gray-900 max-w-4xl mx-auto">
                 Your reflection, <br />
                 <span className="bg-gradient-to-r from-indigo-600 to-violet-500 bg-clip-text text-transparent">working for you.</span>

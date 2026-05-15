@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import {
   ArrowLeft, BookOpen, MessageSquare, Users, ClipboardCheck,
   Stethoscope, CalendarCheck, Clock, FileText, Headphones, Zap, BarChart3,
@@ -52,25 +52,6 @@ export default function SpecializationPage() {
   const params = useParams();
   const router = useRouter();
   const [spec, setSpec] = useState<SpecializationData | null>(null);
-  const outcomeRef = useRef<HTMLDivElement>(null);
-  const [outcomeInView, setOutcomeInView] = useState(false);
-  const [stepInView, setStepInView] = useState<boolean[]>([false, false, false, false]);
-  const [heroScroll, setHeroScroll] = useState(0);
-
-  // Window-based scroll for hero parallax (avoids target ref hydration issue)
-  useEffect(() => {
-    const handleScroll = () => {
-      const vh = window.innerHeight;
-      const y = window.scrollY;
-      setHeroScroll(Math.min(y / (vh * 1.1), 1));
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const heroY = heroScroll * 200;
-  const heroOpacity = Math.max(1 - heroScroll / 0.6, 0);
-  const heroScale = 1 + heroScroll * 0.1;
 
   useEffect(() => {
     const data = getSpecialization(params.id as string);
@@ -78,278 +59,143 @@ export default function SpecializationPage() {
     setSpec(data);
   }, [params.id, router]);
 
-  // Observe outcome
-  useEffect(() => {
-    if (!outcomeRef.current) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setOutcomeInView(true); }, { threshold: 0.4 });
-    obs.observe(outcomeRef.current);
-    return () => obs.disconnect();
-  }, [spec]);
-
   if (!spec) return null;
 
   const SectionIcon = sectionIconMap[spec.icon] || GraduationCap;
 
   return (
-    <main className="bg-white text-slate-900 overflow-x-hidden">
+    <main className="bg-white text-slate-900 min-h-screen font-sans selection:bg-indigo-100 selection:text-indigo-900 pb-32">
+      
+      {/* ── HEADER ── */}
+      <header className="max-w-3xl mx-auto px-6 pt-16 pb-8">
+        <button onClick={() => router.push('/')}
+          className="flex items-center gap-2 mb-12 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors group">
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to overview
+        </button>
 
-      {/* ═══════════════ HERO ═══════════════ */}
-      <div className="relative h-[110vh] overflow-hidden">
-        {/* Parallax Background Image */}
-        <div className="absolute inset-0 z-0"
-          style={{ transform: `translateY(${heroY}px) scale(${heroScale})`, transition: 'transform 0.05s linear' }}>
-          <img src={spec.heroImage} alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, ${spec.color}10 0%, ${spec.color}90 50%, ${spec.color} 100%)` }} />
-        </div>
-
-        {/* Hero Content */}
-        <div className="relative z-10 h-full flex flex-col justify-end pb-24 px-6"
-          style={{ opacity: heroOpacity, transition: 'opacity 0.05s linear' }}>
-          <div className="max-w-5xl mx-auto w-full">
-            {/* Back */}
-            <button onClick={() => router.push('/')}
-              className="flex items-center gap-2 mb-12 text-sm font-medium text-white/60 hover:text-white transition-colors group">
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back
-            </button>
-
-            {/* Badge */}
-            <div className="flex items-center gap-3 mb-8">
-              <SectionIcon className="w-5 h-5 text-white/70" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/50">{spec.tagline}</span>
-            </div>
-
-            {/* Title */}
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white leading-[0.95] font-[family-name:var(--font-jakarta)] max-w-4xl">
-              {spec.heroLine}
-            </h1>
-
-            {/* Subline */}
-            <p className="text-lg md:text-xl text-white/60 mt-8 max-w-xl leading-relaxed font-light">
-              {spec.heroSubline}
-            </p>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 rounded-lg" style={{ backgroundColor: `${spec.color}15` }}>
+            <SectionIcon className="w-5 h-5" style={{ color: spec.color }} />
           </div>
-        </div>
-      </div>
-
-      {/* ═══════════════ THE PROBLEM ═══════════════ */}
-      <section className="py-32 md:py-44 px-6">
-        <div className="max-w-3xl mx-auto">
-          {spec.scenario.map((para, i) => (
-            <motion.p
-              key={i}
-              initial={{ opacity: 0, y: 60 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-100px' }}
-              transition={{ duration: 0.8, delay: i * 0.15, ease: [0.25, 0.1, 0, 1] }}
-              className={`mb-8 last:mb-0 leading-[1.6] ${
-                i === spec.scenario.length - 1
-                  ? 'text-3xl md:text-4xl font-semibold font-[family-name:var(--font-jakarta)]'
-                  : 'text-2xl md:text-3xl text-slate-500 font-light'
-              }`}
-              style={i === spec.scenario.length - 1 ? { color: spec.color } : undefined}
-            >
-              {para}
-            </motion.p>
-          ))}
-        </div>
-      </section>
-
-      {/* ═══════════════ STEPS ═══════════════ */}
-      {spec.steps.map((step, i) => {
-        const StepIcon = iconMap[step.icon] || CheckCircle2;
-        const isEven = i % 2 === 0;
-        const inView = stepInView[i];
-
-        return (
-          <section key={i} className="relative">
-            {/* Full-width color band for alternating steps */}
-            <div className={`${isEven ? 'bg-white' : ''}`}
-              style={!isEven ? { backgroundColor: `${spec.color}04` } : undefined}>
-              <div className="max-w-6xl mx-auto px-6 py-28 md:py-40">
-                <div className={`grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center ${!isEven ? 'lg:direction-rtl' : ''}`}>
-
-                  {/* Text Side */}
-                  <motion.div
-                    initial={{ opacity: 0, x: isEven ? -60 : 60 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: '-80px' }}
-                    transition={{ duration: 0.9, ease: [0.25, 0.1, 0, 1] }}
-                    onViewportEnter={() => setStepInView(p => { const n = [...p]; n[i] = true; return n; })}
-                    className={`lg:col-span-7 ${!isEven ? 'lg:order-2' : ''}`}
-                  >
-                    {/* Step Number */}
-                    <div className="flex items-center gap-4 mb-8">
-                      <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-slate-400">
-                        Step {String(i + 1).padStart(2, '0')}
-                      </span>
-                      <div className="h-px flex-1 bg-slate-100" />
-                    </div>
-
-                    {/* Title */}
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] mb-8 font-[family-name:var(--font-jakarta)]">
-                      {step.title}
-                    </h2>
-
-                    {/* Description */}
-                    <p className="text-lg md:text-xl text-slate-500 leading-relaxed mb-6 font-light">
-                      {step.description}
-                    </p>
-
-                    {/* Detail */}
-                    <motion.p
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.3, duration: 0.7 }}
-                      className="text-base text-slate-400 leading-relaxed border-l-2 pl-6"
-                      style={{ borderColor: `${spec.color}30` }}
-                    >
-                      {step.detail}
-                    </motion.p>
-                  </motion.div>
-
-                  {/* Stat Side */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true, margin: '-80px' }}
-                    transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0, 1] }}
-                    className={`lg:col-span-5 ${!isEven ? 'lg:order-1' : ''}`}
-                  >
-                    <div className="relative flex flex-col items-center justify-center p-12 md:p-16 rounded-3xl overflow-hidden"
-                      style={{ backgroundColor: `${spec.color}06`, border: `1px solid ${spec.color}10` }}>
-
-                      {/* Decorative rings */}
-                      <div className="absolute -inset-8 border border-dashed rounded-full opacity-10 animate-[spin_60s_linear_infinite]"
-                        style={{ borderColor: spec.color }} />
-                      <div className="absolute -inset-20 border rounded-full opacity-5 animate-[spin_90s_linear_infinite_reverse]"
-                        style={{ borderColor: spec.color }} />
-
-                      {/* Icon */}
-                      <motion.div
-                        initial={{ scale: 0, rotate: -30 }}
-                        whileInView={{ scale: 1, rotate: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.4 }}
-                        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-8"
-                        style={{ backgroundColor: `${spec.color}12` }}
-                      >
-                        <StepIcon className="w-8 h-8" style={{ color: spec.color }} />
-                      </motion.div>
-
-                      {/* Big Number */}
-                      <div className="text-6xl md:text-7xl font-bold font-[family-name:var(--font-jakarta)] mb-3">
-                        <AnimatedCounter value={step.stat} color={spec.color} inView={inView} />
-                      </div>
-                      <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400 text-center">
-                        {step.statLabel}
-                      </span>
-                    </div>
-                  </motion.div>
-                </div>
-              </div>
-            </div>
-          </section>
-        );
-      })}
-
-      {/* ═══════════════ OUTCOME ═══════════════ */}
-      <section ref={outcomeRef} className="relative py-40 md:py-56 overflow-hidden" style={{ backgroundColor: spec.color }}>
-        {/* Subtle dot pattern */}
-        <div className="absolute inset-0 opacity-[0.06] pointer-events-none"
-          style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.5) 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
-
-        <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
-          {/* Label */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/40 mb-12"
-          >
-            The Result
-          </motion.p>
-
-          {/* Animated Big Stat */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.25, 0.1, 0, 1] }}
-            className="text-[8rem] md:text-[12rem] lg:text-[14rem] font-bold leading-none text-white font-[family-name:var(--font-jakarta)] mb-4"
-            style={{ textShadow: '0 4px 60px rgba(0,0,0,0.15)' }}
-          >
-            {outcomeInView ? spec.outcomeStat : ''}
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/50 mb-20"
-          >
-            {spec.outcomeLabel}
-          </motion.p>
-
-          {/* Outcome text */}
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-            className="text-2xl md:text-3xl text-white/80 leading-relaxed font-light max-w-2xl mx-auto"
-          >
-            {spec.outcome}
-          </motion.p>
-        </div>
-      </section>
-
-      {/* ═══════════════ TESTIMONIAL ═══════════════ */}
-      <section className="py-32 md:py-44 px-6 bg-white">
-        <div className="max-w-3xl mx-auto text-center">
-          <motion.blockquote
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.25, 0.1, 0, 1] }}
-            className="text-3xl md:text-4xl font-light text-slate-800 leading-[1.5] italic font-[family-name:var(--font-instrument)] mb-12"
-          >
-            &ldquo;{spec.testimonial}&rdquo;
-          </motion.blockquote>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="flex items-center justify-center gap-4"
-          >
-            <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: spec.colorLight }}>
-              <SectionIcon className="w-6 h-6" style={{ color: spec.color }} />
-            </div>
-            <div className="text-left">
-              <p className="text-sm font-semibold text-slate-900">{spec.testimonialAuthor}</p>
-              <p className="text-[12px] text-slate-400">{spec.testimonialRole}</p>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ═══════════════ BACK CTA ═══════════════ */}
-      <section className="py-20 px-6 border-t border-slate-100">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <button onClick={() => router.push('/')}
-            className="flex items-center gap-3 text-sm text-slate-400 hover:text-slate-900 font-medium transition-colors group">
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            Back to overview
-          </button>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-300">
-            Digital Twin · {spec.title}
+          <span className="text-sm font-semibold uppercase tracking-widest" style={{ color: spec.color }}>
+            {spec.tagline}
           </span>
         </div>
-      </section>
+
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.1] mb-6 font-[family-name:var(--font-jakarta)]">
+          {spec.heroLine}
+        </h1>
+
+        <p className="text-xl md:text-2xl text-slate-500 leading-relaxed font-light mb-12">
+          {spec.heroSubline}
+        </p>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full aspect-video md:aspect-[21/9] rounded-2xl overflow-hidden shadow-lg relative mb-16"
+        >
+          <img src={spec.heroImage} alt={spec.title} className="w-full h-full object-cover" />
+          <div className="absolute inset-0 ring-1 ring-inset ring-black/10 rounded-2xl"></div>
+        </motion.div>
+      </header>
+
+      {/* ── ARTICLE BODY ── */}
+      <article className="max-w-3xl mx-auto px-6">
+        
+        {/* Scenario */}
+        <div className="prose prose-lg prose-slate max-w-none mb-16">
+          {spec.scenario.map((para, i) => (
+            <p key={i} className={`leading-relaxed text-slate-800 ${i === 0 ? 'text-xl font-medium' : ''}`}>
+              {para}
+            </p>
+          ))}
+        </div>
+
+        <hr className="my-16 border-slate-200" />
+
+        {/* Steps */}
+        <div className="space-y-16">
+          {spec.steps.map((step, i) => {
+            const StepIcon = iconMap[step.icon] || CheckCircle2;
+            
+            return (
+              <section key={i} className="scroll-mt-24">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-sm" style={{ backgroundColor: `${spec.color}15` }}>
+                     <StepIcon className="w-5 h-5" style={{ color: spec.color }} />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 font-[family-name:var(--font-jakarta)]">
+                    {step.title}
+                  </h3>
+                </div>
+                
+                <div className="prose prose-lg prose-slate max-w-none mb-8">
+                  <p className="text-slate-700 leading-relaxed">{step.description}</p>
+                </div>
+
+                {/* Inline Callout for Detail & Stat */}
+                <div className="bg-slate-50 rounded-2xl border border-slate-100 p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-start my-8">
+                  <div className="flex-1">
+                    <p className="text-slate-600 text-base leading-relaxed m-0 italic">"{step.detail}"</p>
+                  </div>
+                  
+                  <div className="w-full md:w-auto shrink-0 flex flex-col items-center justify-center p-6 rounded-xl bg-white shadow-sm border border-slate-100 min-w-[160px]">
+                    <div className="text-4xl font-bold font-[family-name:var(--font-jakarta)] mb-1">
+                      <AnimatedCounter value={step.stat} color={spec.color} inView={true} />
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 text-center">
+                      {step.statLabel}
+                    </span>
+                  </div>
+                </div>
+
+              </section>
+            );
+          })}
+        </div>
+
+        <hr className="my-16 border-slate-200" />
+
+        {/* ── OUTCOME ── */}
+        <section className="mb-20">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-8">The Result</h2>
+          
+          <div className="flex flex-col md:flex-row gap-8 items-start mb-12">
+            <div className="shrink-0">
+               <div className="text-6xl md:text-8xl font-black font-[family-name:var(--font-jakarta)] leading-none" style={{ color: spec.color }}>
+                 {spec.outcomeStat}
+               </div>
+               <div className="text-sm font-semibold uppercase tracking-widest text-slate-500 mt-2">
+                 {spec.outcomeLabel}
+               </div>
+            </div>
+            <div className="flex-1">
+              <p className="text-2xl md:text-3xl text-slate-900 font-light leading-snug">
+                {spec.outcome}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── TESTIMONIAL ── */}
+        <section className="bg-slate-50 rounded-3xl p-8 md:p-12 border border-slate-100">
+           <blockquote className="text-xl md:text-2xl text-slate-700 leading-relaxed italic mb-8 font-serif">
+             "{spec.testimonial}"
+           </blockquote>
+           <div className="flex items-center gap-4">
+             <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: `${spec.color}20` }}>
+               <SectionIcon className="w-6 h-6" style={{ color: spec.color }} />
+             </div>
+             <div>
+               <p className="font-bold text-slate-900">{spec.testimonialAuthor}</p>
+               <p className="text-sm text-slate-500">{spec.testimonialRole}</p>
+             </div>
+           </div>
+        </section>
+
+      </article>
+
     </main>
   );
 }
