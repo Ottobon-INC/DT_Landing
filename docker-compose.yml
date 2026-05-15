@@ -4,7 +4,6 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: digital-twin-app
-    network_mode: bridge
     restart: unless-stopped
     ports:
       - "9350:9350"
@@ -12,3 +11,12 @@ services:
       NODE_ENV: production
       PORT: "9350"
       HOSTNAME: 0.0.0.0
+    networks:
+      - app_net
+
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.250.0/24
