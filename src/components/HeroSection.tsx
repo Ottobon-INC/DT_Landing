@@ -22,9 +22,9 @@ export default function HeroSection() {
           <span className="text-2xl font-black tracking-tighter text-black">Digital Twin</span>
         </div>
         <div className="flex items-center gap-6">
-          <button className="text-sm font-semibold px-6 py-2.5 rounded-full border border-gray-200 hover:bg-[#1A1A1A] hover:text-white hover:border-[#1A1A1A] transition-all">
+          <a href="#deploy" className="text-sm font-semibold px-6 py-2.5 rounded-full border border-gray-200 hover:bg-[#1A1A1A] hover:text-white hover:border-[#1A1A1A] transition-all">
             Join
-          </button>
+          </a>
           <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
             <Menu className="w-6 h-6 text-gray-700" />
           </button>
@@ -32,10 +32,10 @@ export default function HeroSection() {
       </nav>
 
       {/* Hero Content */}
-      <main className="pt-24 md:pt-40 px-6 max-w-7xl mx-auto">
+      <main className="pt-24 md:pt-32 px-6 max-w-7xl mx-auto">
         <ContainerScroll
           titleComponent={
-            <div className="space-y-8 mb-20 mt-16 md:mt-0">
+            <div className="space-y-8 mb-16 mt-8 md:mt-0">
               <h1 className="text-6xl md:text-8xl font-black tracking-tight leading-[1.1] text-gray-900 max-w-4xl mx-auto">
                 Your reflection, <br />
                 <span className="bg-gradient-to-r from-indigo-600 to-violet-500 bg-clip-text text-transparent">working for you.</span>
@@ -47,10 +47,13 @@ export default function HeroSection() {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
-                <button className="flex items-center gap-2 bg-[#1A1A1A] text-white px-10 py-5 rounded-full font-bold hover:scale-105 transition-transform shadow-2xl shadow-indigo-500/20 active:scale-95">
+                <a
+                  href="#deploy"
+                  className="flex items-center gap-2 bg-[#1A1A1A] text-white px-10 py-5 rounded-full font-bold hover:scale-105 transition-transform shadow-2xl shadow-indigo-500/20 active:scale-95"
+                >
                   Join the Waitlist
                   <ArrowRight className="w-5 h-5" />
-                </button>
+                </a>
               </div>
             </div>
           }

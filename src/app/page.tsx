@@ -1,6 +1,7 @@
 import HeroSection from '@/components/HeroSection';
 import DeviceShowcase from '@/components/DeviceShowcase';
 import ReflectionSection from '@/components/ReflectionSection';
+import DeputyLayer from '@/components/DeputyLayer';
 import WatchItWork from '@/components/WatchItWork';
 import SpecializationsSection from '@/components/SpecializationsSection';
 import JournalistFramework from '@/components/JournalistFramework';
@@ -21,6 +22,7 @@ export default function Home() {
           <HeroSection />
           <ReflectionSection />
           <DeviceShowcase />
+          <DeputyLayer />
           <WatchItWork />
           <JournalistFramework />
           <SpecializationsSection />

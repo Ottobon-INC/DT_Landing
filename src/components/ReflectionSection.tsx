@@ -20,17 +20,17 @@ export default function ReflectionSection() {
   } | null>(null);
 
   const steps = [
-    { name: "Contextual Ingestion", color: "#64748b", slug: "contextual-ingestion" },
-    { name: "Taxonomy Classification", color: "#6366f1", slug: "taxonomy-classification" },
-    { name: "Conscious Logic Emulation", color: "#8b5cf6", slug: "conscious-logic-emulation" },
-    { name: "Bounded Task Execution", color: "#06b6d4", slug: "bounded-task-execution" }
+    { name: "Information Collection", color: "#64748b", slug: "contextual-ingestion" },
+    { name: "Organizing Data", color: "#6366f1", slug: "taxonomy-classification" },
+    { name: "Applying Your Logic", color: "#8b5cf6", slug: "conscious-logic-emulation" },
+    { name: "Safe Task Execution", color: "#06b6d4", slug: "bounded-task-execution" }
   ];
 
   const activityCards = [
-    { label: "Knowledge Hub Traversal", status: "success" as const, color: "#6366F1", slug: "knowledge-hub-traversal" },
-    { label: "Expert Persona Validated", status: "success" as const, color: "#8B5CF6", slug: "expert-persona-validated" },
-    { label: "Execution Authorized", status: "success" as const, color: "#10B981", slug: "execution-authorized" },
-    { label: "HITL Edge-Case Routing*", status: "warning" as const, color: "#F59E0B", slug: "hitl-edge-case-routing" }
+    { label: "Reviewing Guidelines", status: "success" as const, color: "#6366F1", slug: "knowledge-hub-traversal" },
+    { label: "Matching Your Expertise", status: "success" as const, color: "#8B5CF6", slug: "expert-persona-validated" },
+    { label: "Action Approved", status: "success" as const, color: "#10B981", slug: "execution-authorized" },
+    { label: "Human Review Required*", status: "warning" as const, color: "#F59E0B", slug: "hitl-edge-case-routing" }
   ];
 
   const updateCoords = useCallback(() => {
@@ -192,14 +192,14 @@ export default function ReflectionSection() {
         <div className="flex flex-col lg:flex-row items-center justify-center gap-16 lg:gap-24 w-full max-w-6xl relative z-20">
 
           {/* Left Column: Input Steps */}
-          <div className="flex flex-col gap-8 w-full lg:w-[280px]">
+          <div className="flex flex-col gap-4 w-full lg:w-[240px]">
             {steps.map((step, i) => {
               const isHovered = hoveredStep === i;
               return (
                 <div
                   key={step.name}
                   ref={el => { stepRefs.current[i] = el; }}
-                  className="relative px-6 py-5 rounded-xl border bg-white flex flex-col items-center justify-center lg:justify-end cursor-pointer font-[family-name:var(--font-jakarta)] w-full group"
+                  className="relative px-4 py-3 rounded-xl border bg-white flex flex-col items-center justify-center lg:justify-end cursor-pointer font-[family-name:var(--font-jakarta)] w-full group"
                   style={{
                     borderColor: isHovered ? step.color : `${step.color}40`,
                     backgroundColor: isHovered ? `${step.color}12` : `${step.color}06`,
@@ -222,7 +222,7 @@ export default function ReflectionSection() {
 
                   {/* Learn More Button */}
                   <div
-                    className="flex items-center gap-1.5 mt-3 self-start"
+                    className="flex items-center gap-1.5 mt-2 self-start"
                     style={{
                       opacity: isHovered ? 1 : 0,
                       transform: isHovered ? 'translateY(0)' : 'translateY(8px)',

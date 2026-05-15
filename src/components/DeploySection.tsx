@@ -5,7 +5,7 @@ import { ArrowRight } from 'lucide-react';
 
 export default function DeploySection() {
   return (
-    <section className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden bg-[#0A0A0A]">
+    <section id="deploy" className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden bg-[#0A0A0A]">
       {/* Visual Content Container */}
       <div className="absolute inset-0 w-full h-full">
         <img 
@@ -34,17 +34,18 @@ export default function DeploySection() {
             <span className="text-[#E84311] font-bold">even when you are not.</span>
           </p>
 
-          <motion.button
+          <motion.a
+            href="mailto:hr.acad@ottobon.in?subject=Digital%20Twin%20Waitlist%20Request&body=Hi%2C%0A%0AI%E2%80%99d%20like%20to%20join%20the%20Digital%20Twin%20waitlist.%0A%0AName%3A%20%0ARole%3A%20%0AOrganization%3A%20%0A%0ALooking%20forward%20to%20hearing%20from%20you!"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="group relative px-10 py-5 bg-white text-black rounded-none font-black text-lg overflow-hidden transition-all hover:pr-14"
+            className="group relative inline-flex px-10 py-5 bg-white text-black rounded-none font-black text-lg overflow-hidden transition-all hover:pr-14"
           >
             <span className="relative z-10 flex items-center gap-4">
               JOIN THE WAITLIST
               <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
             </span>
             <div className="absolute top-0 right-0 h-full w-0 bg-[#E84311] group-hover:w-4 transition-all duration-300" />
-          </motion.button>
+          </motion.a>
         </motion.div>
       </div>
 

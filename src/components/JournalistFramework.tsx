@@ -159,9 +159,9 @@ export default function JournalistFramework() {
 
           <motion.div
             animate={{
-              x: activeCard ? '40%' : '0%',
+              x: activeCard ? '55%' : '0%',
               rotateY: activeCard ? -10 : 0,
-              scale: activeCard ? 1.4 : 1.5
+              scale: activeCard ? 1.3 : 1.5
             }}
             transition={{ type: "spring", stiffness: 80, damping: 20 }}
             className="relative z-20"
