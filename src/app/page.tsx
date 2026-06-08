@@ -2,6 +2,7 @@ import HeroSection from '@/components/HeroSection';
 import DeviceShowcase from '@/components/DeviceShowcase';
 import ReflectionSection from '@/components/ReflectionSection';
 import DeputyLayer from '@/components/DeputyLayer';
+import TwinCore from '@/components/TwinCore';
 import WatchItWork from '@/components/WatchItWork';
 import SpecializationsSection from '@/components/SpecializationsSection';
 import JournalistFramework from '@/components/JournalistFramework';
@@ -17,12 +18,13 @@ export default function Home() {
       <main className="relative min-h-screen bg-[#FDFDFD]">
         {/* Cinematic Neural Overlay */}
         <NeuralPath />
-        
+
         <div className="relative z-10">
           <HeroSection />
-          <ReflectionSection />
+          {/* <ReflectionSection /> */}
           <DeviceShowcase />
           <DeputyLayer />
+          <TwinCore />
           <WatchItWork />
           <JournalistFramework />
           <SpecializationsSection />
