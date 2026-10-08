@@ -170,7 +170,7 @@ export default function DeviceShowcase() {
           <div className="text-center md:text-right flex flex-col items-center md:items-end">
             <div className="w-12 h-px bg-indigo-600 mb-8" />
             <blockquote className="text-3xl md:text-5xl font-normal text-black leading-tight max-w-2xl font-[family-name:var(--font-instrument)] italic">
-              "Your twin can work here without you."
+              "Your twin can work here without your presence."
             </blockquote>
           </div>
 

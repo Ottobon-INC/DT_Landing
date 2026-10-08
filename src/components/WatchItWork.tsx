@@ -264,7 +264,7 @@ export default function WatchItWork() {
                   </div>
                   <div className="px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 flex items-center gap-1.5">
                     <Sparkles className="w-3 h-3 text-emerald-500" />
-                    <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">8× speed</span>
+                    <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">5×</span>
                   </div>
                 </div>
 

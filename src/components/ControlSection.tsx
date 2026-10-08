@@ -81,7 +81,7 @@ export default function ControlSection() {
               <div className="w-20 h-20 rounded-2xl bg-amber-50 flex items-center justify-center p-2 relative">
                 <img src="/images/confused-bot.png" alt="Confused Bot" className="w-full h-full object-contain mix-blend-multiply" />
               </div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Digital Twin <br /> when confused</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Digital Twin <br /> (Edge Cases)</span>
             </div>
 
             {/* Content Box */}

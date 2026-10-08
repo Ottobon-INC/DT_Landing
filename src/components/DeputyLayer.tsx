@@ -93,10 +93,10 @@ export default function DeputyLayer() {
             className="flex flex-col items-center"
           >
             <h2 className="text-8xl font-black tracking-tighter text-slate-900  mb-3">
-              The Deputy Layer
+              Knowledge Pipeline
             </h2>
             <p className="text-slate-500 text-base font-medium tracking-tight max-w-xl mb-6">
-              Every expert relies on trusted operational deputies.
+              From human intuition to infinite scale. Watch how the AI Journalist extracts and deploys expertise.
             </p>
           </motion.div>
         </div>
@@ -127,45 +127,62 @@ export default function DeputyLayer() {
             {/* SVG Global Overlay - Spans all columns */}
             <div className="absolute inset-0 pointer-events-none z-0">
               <svg className="w-full h-full overflow-visible" viewBox="0 0 1200 500" preserveAspectRatio="none">
-                {/* Expert to AI Core (Top Path) */}
+                {/* Expert to AI Journalist (Vertical Path) */}
                 <path
-                  d="M 300 120 C 400 120 400 230 467 230 L 472 230"
+                  d="M 150 180 L 150 310"
                   fill="none"
                   stroke="#3b82f6"
                   strokeWidth="3"
-                  className="opacity-10"
+                  className="opacity-20"
+                  strokeDasharray="6 6"
                 />
-                <PathParticle path="M 300 120 C 400 120 400 230 467 230 L 472 230" color="#3b82f6" delay={0} />
-                <PathParticle path="M 300 120 C 400 120 400 230 467 230 L 472 230" color="#3b82f6" delay={1.5} />
+                <PathParticle path="M 150 180 L 150 310" color="#3b82f6" delay={0} />
+                <PathParticle path="M 150 180 L 150 310" color="#3b82f6" delay={1.5} />
 
-                {/* Deputy to AI Core (Bottom Path) */}
+                {/* AI Journalist to AI Core (Bottom Path curving to center) */}
                 <path
-                  d="M 300 380 C 380 380 400 270 467 270 L 472 270"
+                  d="M 300 380 C 380 380 400 250 467 250 L 472 250"
                   fill="none"
                   stroke="#8b5cf6"
                   strokeWidth="3"
-                  className="opacity-10"
+                  className="opacity-20"
                 />
-                <PathParticle path="M 300 380 C 380 380 400 270 467 270 L 472 270" color="#8b5cf6" delay={0.7} />
-                <PathParticle path="M 300 380 C 380 380 400 270 467 270 L 472 270" color="#8b5cf6" delay={2.2} />
+                <PathParticle path="M 300 380 C 380 380 400 250 467 250 L 472 250" color="#8b5cf6" delay={0.7} />
+                <PathParticle path="M 300 380 C 380 380 400 250 467 250 L 472 250" color="#8b5cf6" delay={2.2} />
 
-                {/* AI Core to Client (Output Path) */}
+                {/* AI Core to Client (Bidirectional Output Path) */}
                 <path
                   d="M 728 250 L 900 250"
                   fill="none"
                   stroke="#10b981"
                   strokeWidth="3"
-                  className="opacity-10"
+                  className="opacity-20"
                 />
+                {/* Particles Twin -> Client */}
                 <PathParticle path="M 728 250 L 900 250" color="#10b981" delay={0} />
                 <PathParticle path="M 728 250 L 900 250" color="#10b981" delay={1.5} />
+                {/* Particles Client -> Twin (Questions/Interaction) */}
+                <PathParticle path="M 900 250 L 728 250" color="#34d399" delay={0.7} />
+                <PathParticle path="M 900 250 L 728 250" color="#34d399" delay={2.2} />
 
                 {/* Entry Arrows */}
-                <path d="M 462 225 L 472 230 L 462 235" stroke="#3b82f6" strokeWidth="2" fill="none" />
-                <path d="M 462 265 L 472 270 L 462 275" stroke="#8b5cf6" strokeWidth="2" fill="none" />
-                <path d="M 890 245 L 900 250 L 890 255" stroke="#10b981" strokeWidth="2" fill="none" />
+                <path d="M 145 300 L 150 310 L 155 300" stroke="#3b82f6" strokeWidth="2" fill="none" />
+                <path d="M 462 245 L 472 250 L 462 255" stroke="#8b5cf6" strokeWidth="2" fill="none" />
+                {/* Rightward Arrow (Twin -> Client) at the end of the line */}
+                <path d="M 885 243 L 895 250 L 885 257" stroke="#10b981" strokeWidth="2" fill="none" />
+                {/* Leftward Arrow (Client -> Twin) at the start of the line (shifted right to clear the card) */}
+                <path d="M 790 243 L 780 250 L 790 257" stroke="#34d399" strokeWidth="2" fill="none" />
 
               </svg>
+            </div>
+
+            {/* Absolute Path Labels matching SVG coordinate percentages */}
+            <div className="absolute top-[49%] left-[15%] -translate-y-1/2 pointer-events-none hidden md:block z-20">
+              <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest text-left block leading-tight">Extracts<br />Tacit Knowledge</span>
+            </div>
+            
+            <div className="absolute top-[65%] left-[32%] -translate-y-1/2 -translate-x-1/2 pointer-events-none hidden md:block z-20">
+              <span className="text-[10px] font-black text-purple-500 uppercase tracking-widest text-center block leading-tight">Structures<br />Tacit Logic</span>
             </div>
 
             {/* LEFT: Internal Roles */}
@@ -191,38 +208,31 @@ export default function DeputyLayer() {
                 </div>
               </motion.div>
 
-              {/* Deputy Card */}
+              {/* AI Journalist Card */}
               <motion.div
-                key={`${activeMode}-deputy`}
+                key="ai-journalist"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1 }}
-                className="relative p-8 rounded-[2rem] border-2 border-dashed border-indigo-200 bg-white shadow-lg flex flex-col items-center text-center"
+                className="relative p-8 rounded-[2rem] border-2 border-blue-200 bg-blue-50/30 shadow-lg flex flex-col items-center text-center mt-2"
               >
-                <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center mb-4">
-                  <User className="w-6 h-6 text-indigo-500" />
+                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+                  <Bot className="w-6 h-6 text-blue-600" />
                 </div>
                 <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight mb-1">
-                  {modes[activeMode].deputy}
+                  AI Journalist
                 </h3>
                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-4">
-                  {modeContent[activeMode].deputySub}
+                  Knowledge Extractor
                 </p>
-                <div className="px-4 py-1 rounded-full bg-indigo-100 text-[9px] font-black text-indigo-600 uppercase tracking-widest">
-                  DEPUTY
+                <div className="px-4 py-1 rounded-full bg-blue-200 text-[9px] font-black text-blue-700 uppercase tracking-widest">
+                  INTERVIEWS
                 </div>
               </motion.div>
             </div>
 
             {/* CENTER: AI Core */}
             <div className="col-span-6 flex flex-col items-center justify-center relative min-h-[400px] z-10">
-              {/* Path Labels */}
-              <div className="absolute left-4 top-20 pointer-events-none">
-                <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest text-right block leading-tight">Strategic<br />Signals</span>
-              </div>
-              <div className="absolute left-4 bottom-20 pointer-events-none">
-                <span className="text-[10px] font-black text-purple-500 uppercase tracking-widest text-right block leading-tight">Operational<br />Signals</span>
-              </div>
 
               <div className="relative group">
                 <div className="absolute inset-0 flex items-center justify-center -z-10 scale-150">
