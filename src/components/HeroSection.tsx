@@ -36,6 +36,12 @@ export default function HeroSection() {
         <ContainerScroll
           titleComponent={
             <div className="space-y-8 mb-16 mt-8 md:mt-0">
+              <div className="flex justify-center mb-6">
+                <span className="inline-block px-4 py-1.5 bg-indigo-50 border border-indigo-100 text-indigo-700 text-sm font-bold uppercase tracking-widest rounded-full">
+                  PRIVATE BETA • ENTERPRISE INTELLIGENCE
+                </span>
+              </div>
+
               <h1 className="text-6xl md:text-8xl font-black tracking-tight leading-[1.1] text-gray-900 max-w-4xl mx-auto">
                 Your reflection, <br />
                 <span className="bg-gradient-to-r from-indigo-600 to-violet-500 bg-clip-text text-transparent">working for you.</span>
@@ -47,12 +53,12 @@ export default function HeroSection() {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
-                <a
-                  href="#deploy"
-                  className="flex items-center gap-2 bg-[#1A1A1A] text-white px-10 py-5 rounded-full font-bold hover:scale-105 transition-transform shadow-2xl shadow-indigo-500/20 active:scale-95"
-                >
-                  Join the Waitlist
-                  <ArrowRight className="w-5 h-5" />
+                <a href="#deploy" className="cta-btn !h-[4em] !px-12 !text-[16px]">
+                  Request Early Access
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </a>
+                <a href="#how-it-works" className="px-8 py-4 text-base font-bold text-neutral-700 hover:text-indigo-600 transition-colors">
+                  See How It Works ↓
                 </a>
               </div>
             </div>

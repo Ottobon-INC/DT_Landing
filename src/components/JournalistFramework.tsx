@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, HelpCircle, Network, ArrowRight, X, Activity, GitBranch, BrainCircuit } from 'lucide-react';
+import { Search, HelpCircle, Network, ArrowRight, X, Activity, GitBranch, BrainCircuit, MessageCircle, Database } from 'lucide-react';
 
 export default function JournalistFramework() {
   const [activeCard, setActiveCard] = useState<string | null>(null);
@@ -13,19 +13,19 @@ export default function JournalistFramework() {
   const getBgGlow = () => {
     const target = activeCard || hoveredCard;
     switch (target) {
-      case 'context': return 'radial-gradient(circle at center, rgba(79, 70, 229, 0.15) 0%, transparent 70%)'; // Indigo
-      case 'why': return 'radial-gradient(circle at center, rgba(16, 185, 129, 0.15) 0%, transparent 70%)'; // Emerald
-      case 'patterns': return 'radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%)'; // White/Slate
+      case 'interview': return 'radial-gradient(circle at center, rgba(79, 70, 229, 0.15) 0%, transparent 70%)'; // Indigo
+      case 'explicit': return 'radial-gradient(circle at center, rgba(16, 185, 129, 0.15) 0%, transparent 70%)'; // Emerald
+      case 'tacit': return 'radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%)'; // White/Slate
       default: return 'radial-gradient(circle at center, rgba(255, 255, 255, 0.03) 0%, transparent 70%)';
     }
   };
 
   const getPanelContent = () => {
     switch (activeCard) {
-      case 'context':
+      case 'interview':
         return {
-          title: "CONTEXT FIRST",
-          description: "The Twin doesn't just answer questions; it analyzes the full context of the user's situation before formulating a response, ensuring relevance and accuracy.",
+          title: "EXPERT INTERVIEW",
+          description: "The AI Journalist engages the expert in a dynamic conversation, asking targeted questions to extract their unique approaches and decision-making frameworks.",
           accent: "text-indigo-400",
           border: "border-indigo-500/30",
           visualizer: (
@@ -35,7 +35,7 @@ export default function JournalistFramework() {
                 transition={{ duration: 3, repeat: Infinity }}
                 className="absolute w-24 h-24 bg-indigo-500/20 rounded-full blur-xl"
               />
-              <Activity className="w-12 h-12 text-indigo-400 relative z-10" />
+              <MessageCircle className="w-12 h-12 text-indigo-400 relative z-10" />
               <div className="absolute inset-0">
                 {[...Array(5)].map((_, i) => (
                   <motion.div
@@ -50,15 +50,15 @@ export default function JournalistFramework() {
             </div>
           )
         };
-      case 'why':
+      case 'explicit':
         return {
-          title: "ASK WHY",
-          description: "The Twin doesn't just copy actions; it reverse-engineers the reasoning behind them, asking targeted questions when expert behavior deviates from the norm.",
+          title: "WORK KNOWLEDGE",
+          description: "The framework categorizes explicit rules, standard operating procedures, and factual data into structured work knowledge that the Twin can logically follow.",
           accent: "text-emerald-400",
           border: "border-emerald-500/30",
           visualizer: (
             <div className="relative w-full h-48 bg-emerald-950/20 rounded-xl overflow-hidden flex items-center justify-center border border-emerald-500/20">
-              <GitBranch className="w-12 h-12 text-emerald-400 relative z-10" />
+              <Database className="w-12 h-12 text-emerald-400 relative z-10" />
               <motion.div 
                 animate={{ rotate: 360 }}
                 transition={{ duration: 20, ease: "linear", repeat: Infinity }}
@@ -67,10 +67,10 @@ export default function JournalistFramework() {
             </div>
           )
         };
-      case 'patterns':
+      case 'tacit':
         return {
-          title: "FIND PATTERNS",
-          description: "By observing thousands of interactions, the Twin identifies implicit operational patterns and standardizes them into reusable knowledge pathways.",
+          title: "TACIT KNOWLEDGE",
+          description: "It captures the unspoken intuition, implicit patterns, and \"gut feelings\" that truly differentiate an expert, translating them into replicable AI pathways.",
           accent: "text-slate-200",
           border: "border-slate-500/30",
           visualizer: (
@@ -117,7 +117,7 @@ export default function JournalistFramework() {
             transition={{ delay: 0.1 }}
             className="text-xl text-slate-400 font-medium"
           >
-            The twin learns how experts actually think.
+            Interviewing experts to digitize their mind.
           </motion.p>
         </div>
 
@@ -149,7 +149,7 @@ export default function JournalistFramework() {
                   {panelData.description}
                 </p>
 
-                <Link href="/journalist" className="mt-8 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/80 hover:text-white transition-colors group">
+                <Link href="/journalist" className="explore-btn group">
                   Explore Architecture 
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
@@ -170,76 +170,76 @@ export default function JournalistFramework() {
             <div className={`wallet ${activeCard ? 'wallet-active' : ''}`}>
               <div className="wallet-back" />
               
-              {/* Card 1: Context First (Blue) */}
+              {/* Card 1: Expert Interview (Blue) */}
               <div 
-                className={`card stripe ${activeCard === 'context' ? 'active-card' : activeCard ? 'inactive-card' : ''}`}
-                onClick={() => setActiveCard(activeCard === 'context' ? null : 'context')}
-                onMouseEnter={() => setHoveredCard('context')}
+                className={`card stripe ${activeCard === 'interview' ? 'active-card' : activeCard ? 'inactive-card' : ''}`}
+                onClick={() => setActiveCard(activeCard === 'interview' ? null : 'interview')}
+                onMouseEnter={() => setHoveredCard('interview')}
                 onMouseLeave={() => setHoveredCard(null)}
               >
                 <div className="scanning-line" />
                 <div className="card-inner relative z-10">
                   <div className="card-top">
-                    <span className="flex items-center gap-2 font-bold tracking-widest"><Search className="w-4 h-4" /> CONTEXT FIRST</span>
+                    <span className="flex items-center gap-2 font-bold tracking-widest"><MessageCircle className="w-4 h-4" /> EXPERT INTERVIEW</span>
                     <div className="chip" />
                   </div>
                   <div className="card-middle my-3">
-                    <p className="text-[11px] leading-relaxed opacity-90 font-medium">Understands situational nuance before generating responses</p>
+                    <p className="text-[11px] leading-relaxed opacity-90 font-medium">Extracts expertise through dynamic conversation</p>
                   </div>
                   <div className="card-bottom mt-auto">
                     <div className="card-number-wrapper w-full text-right">
-                      <span className="hidden-stars text-[16px] tracking-[2px]">**** DATA</span>
-                      <span className="card-number hidden text-[14px] tracking-[1px] font-mono">0110 1001 DATA</span>
+                      <span className="hidden-stars text-[16px] tracking-[2px]">**** INTV</span>
+                      <span className="card-number hidden text-[14px] tracking-[1px] font-mono">0110 1001 INTV</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Card 2: Ask Why (Green) */}
+              {/* Card 2: Work Knowledge (Green) */}
               <div 
-                className={`card wise ${activeCard === 'why' ? 'active-card' : activeCard ? 'inactive-card' : ''}`}
-                onClick={() => setActiveCard(activeCard === 'why' ? null : 'why')}
-                onMouseEnter={() => setHoveredCard('why')}
+                className={`card wise ${activeCard === 'explicit' ? 'active-card' : activeCard ? 'inactive-card' : ''}`}
+                onClick={() => setActiveCard(activeCard === 'explicit' ? null : 'explicit')}
+                onMouseEnter={() => setHoveredCard('explicit')}
                 onMouseLeave={() => setHoveredCard(null)}
               >
                 <div className="scanning-line" />
                 <div className="card-inner relative z-10">
                   <div className="card-top">
-                    <span className="flex items-center gap-2 font-bold tracking-widest"><HelpCircle className="w-4 h-4" /> ASK WHY</span>
+                    <span className="flex items-center gap-2 font-bold tracking-widest"><Database className="w-4 h-4" /> WORK KNOWLEDGE</span>
                     <div className="chip" />
                   </div>
                   <div className="card-middle my-3">
-                    <p className="text-[11px] leading-relaxed opacity-90 font-medium text-slate-800">Extracts the reasoning behind expert decisions</p>
+                    <p className="text-[11px] leading-relaxed opacity-90 font-medium text-slate-800">Standardizes explicit rules and procedures</p>
                   </div>
                   <div className="card-bottom mt-auto">
                     <div className="card-number-wrapper w-full text-right">
-                      <span className="hidden-stars text-[16px] tracking-[2px] text-slate-700">**** LOGIC</span>
-                      <span className="card-number hidden text-[14px] tracking-[1px] font-mono text-slate-800">1011 0100 LOGIC</span>
+                      <span className="hidden-stars text-[16px] tracking-[2px] text-slate-700">**** WORK</span>
+                      <span className="card-number hidden text-[14px] tracking-[1px] font-mono text-slate-800">1011 0100 WORK</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Card 3: Find Patterns (White) */}
+              {/* Card 3: Tacit Knowledge (White) */}
               <div 
-                className={`card paypal ${activeCard === 'patterns' ? 'active-card' : activeCard ? 'inactive-card' : ''}`}
-                onClick={() => setActiveCard(activeCard === 'patterns' ? null : 'patterns')}
-                onMouseEnter={() => setHoveredCard('patterns')}
+                className={`card paypal ${activeCard === 'tacit' ? 'active-card' : activeCard ? 'inactive-card' : ''}`}
+                onClick={() => setActiveCard(activeCard === 'tacit' ? null : 'tacit')}
+                onMouseEnter={() => setHoveredCard('tacit')}
                 onMouseLeave={() => setHoveredCard(null)}
               >
                 <div className="scanning-line" />
                 <div className="card-inner relative z-10">
                   <div className="card-top">
-                    <span className="flex items-center gap-2 font-bold tracking-widest"><Network className="w-4 h-4 text-indigo-600" /> FIND <b style={{color: '#4f46e5'}}>PATTERNS</b></span>
+                    <span className="flex items-center gap-2 font-bold tracking-widest"><BrainCircuit className="w-4 h-4 text-indigo-600" /> TACIT <b style={{color: '#4f46e5'}}>KNOWLEDGE</b></span>
                     <div className="chip" />
                   </div>
                   <div className="card-middle my-3">
-                    <p className="text-[11px] leading-relaxed opacity-90 font-medium text-slate-600">Detects tacit operational behavior over time</p>
+                    <p className="text-[11px] leading-relaxed opacity-90 font-medium text-slate-600">Captures unspoken intuition and patterns</p>
                   </div>
                   <div className="card-bottom mt-auto">
                     <div className="card-number-wrapper w-full text-right">
-                      <span className="hidden-stars text-[16px] tracking-[2px] text-slate-500">**** SYNC</span>
-                      <span className="card-number hidden text-[14px] tracking-[1px] font-mono text-slate-800">1100 1111 SYNC</span>
+                      <span className="hidden-stars text-[16px] tracking-[2px] text-slate-500">**** INTU</span>
+                      <span className="card-number hidden text-[14px] tracking-[1px] font-mono text-slate-800">1100 1111 INTU</span>
                     </div>
                   </div>
                 </div>
@@ -494,6 +494,57 @@ export default function JournalistFramework() {
           .wallet:hover .balance-real, .wallet-active .balance-real {
             opacity: 1;
             transform: translate(-50%, 0);
+          }
+
+          .explore-btn {
+            width: fit-content;
+            padding: 0 2em;
+            height: 3.5em;
+            border-radius: 30em;
+            font-size: 12px;
+            font-family: inherit;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            background-color: rgba(255, 255, 255, 0.05);
+            box-shadow: 6px 6px 12px rgba(0,0,0,0.2),
+                        -6px -6px 12px rgba(255,255,255,0.05);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            text-decoration: none;
+            margin-top: 2rem;
+            white-space: nowrap;
+            transition: color 0.15s ease-out;
+          }
+
+          .explore-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 30em;
+            background-image: linear-gradient(to right, #4f46e5 0%, #8b5cf6 100%);
+            transition: transform 0.15s ease-out;
+            transform: scaleX(0);
+            transform-origin: left;
+            z-index: -1;
+          }
+
+          .explore-btn:hover::before {
+            transform: scaleX(1);
+          }
+          
+          .explore-btn:hover {
+            color: #ffffff;
           }
         `}</style>
       </div>

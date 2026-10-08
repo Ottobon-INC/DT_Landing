@@ -11,6 +11,7 @@ import ControlSection from '@/components/ControlSection';
 import DeploySection from '@/components/DeploySection';
 import HarnessingAI from '@/components/HarnessingAI';
 import SmoothScroll from '@/components/SmoothScroll';
+import ProblemSolution from '@/components/ProblemSolution';
 
 export default function Home() {
   return (
@@ -21,12 +22,13 @@ export default function Home() {
 
         <div className="relative z-10">
           <HeroSection />
+          <ProblemSolution />
+          <JournalistFramework />
           {/* <ReflectionSection /> */}
-          <DeviceShowcase />
           <DeputyLayer />
           <TwinCore />
           <WatchItWork />
-          <JournalistFramework />
+          <DeviceShowcase />
           <SpecializationsSection />
           <HarnessingAI />
           <ControlSection />

@@ -32,3 +32,38 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0 2em;
+  height: 3.5em;
+  border-radius: 30em;
+  font-size: 0.875rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.9);
+  background-color: #1a1a1a;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  box-shadow: 6px 6px 12px rgba(0,0,0,0.2), -6px -6px 12px rgba(255,255,255,0.05);
+  transition: color 0.15s ease-out;
+  cursor: pointer;
+  border: none;
+}
+.cta-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 30em;
+  background-image: linear-gradient(to right, #4f46e5 0%, #8b5cf6 100%);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.15s ease-out;
+  z-index: -1;
+}
+.cta-btn:hover::before { transform: scaleX(1); }
+.cta-btn:hover { color: #fff; }

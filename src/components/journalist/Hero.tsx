@@ -16,25 +16,35 @@ export default function Hero() {
           animate="visible"
           className="lg:w-1/2 text-left order-2 lg:order-1"
         >
+          <motion.div variants={fadeUpVariant} className="mb-4">
+            <span className="inline-block px-3 py-1 bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-widest rounded-full">
+              PRIVATE BETA • ENTERPRISE INTELLIGENCE
+            </span>
+          </motion.div>
+
           <motion.h1 
             variants={fadeUpVariant}
             className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-neutral-900 mb-6 leading-[1.1]"
           >
-            The Knowledge Inside Your Head Is Irreplaceable.<br />
-            <span className="text-neutral-500">And Right Now — It's At Risk.</span>
+            Turn Unspoken Intuition Into<br />
+            <span className="text-indigo-600">Your Greatest Active Asset.</span>
           </motion.h1>
 
           <motion.p 
             variants={fadeUpVariant}
             className="text-lg text-neutral-600 mb-10 font-medium"
           >
-            AI Journalist extracts the expertise you've spent decades building — 
-            the instincts, the patterns, the gut feelings — and preserves it. Permanently.
+            The AI Journalist interviews your top talent to capture tacit intuition, 
+            pattern recognition, and decision logic—converting silent knowledge into an 
+            active Digital Twin that works for your team 24/7.
           </motion.p>
 
-          <motion.div variants={fadeUpVariant}>
-            <button className="bg-orange-600 text-white px-10 py-4 rounded-lg font-semibold hover:bg-orange-700 transition-colors shadow-lg shadow-orange-600/20 text-lg">
-              Join the Waitlist
+          <motion.div variants={fadeUpVariant} className="flex flex-wrap gap-4">
+            <button className="cta-btn">
+              Request Early Access
+            </button>
+            <button className="px-8 py-3.5 text-sm font-bold text-neutral-700 hover:text-indigo-600 transition-colors">
+              See How It Works ↓
             </button>
           </motion.div>
         </motion.div>
@@ -47,7 +57,7 @@ export default function Hero() {
           className="lg:w-1/2 w-full h-[350px] md:h-[450px] bg-white rounded-[2.5rem] shadow-2xl shadow-neutral-200/50 border border-neutral-100 flex items-center justify-center relative overflow-hidden group order-1 lg:order-2"
         >
           {/* Animated Background Elements */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(234,88,12,0.03)_0%,transparent_70%)]"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(79,70,229,0.03)_0%,transparent_70%)]"></div>
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
                style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
           
@@ -58,9 +68,9 @@ export default function Hero() {
                 opacity: [0.5, 1, 0.5]
               }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="w-16 h-16 bg-orange-600/10 rounded-full flex items-center justify-center mb-6"
+              className="w-16 h-16 bg-indigo-600/10 rounded-full flex items-center justify-center mb-6"
             >
-              <div className="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center shadow-lg shadow-orange-600/40">
+              <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg shadow-indigo-600/40">
                 <div className="w-2.5 h-2.5 bg-white rounded-full animate-pulse"></div>
               </div>
             </motion.div>
@@ -75,7 +85,7 @@ export default function Hero() {
                    key={i}
                    animate={{ opacity: [0.2, 1, 0.2] }}
                    transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
-                   className="w-6 h-0.5 bg-orange-600 rounded-full"
+                   className="w-6 h-0.5 bg-indigo-600 rounded-full"
                  />
                ))}
             </div>
